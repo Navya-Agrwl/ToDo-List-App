@@ -1,31 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>To-Do List App</title>
+
+  <title>To-Do List</title>
 
   <link rel="stylesheet" href="style.css" />
-
-  <!-- FONT AWESOME -->
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-  />
 </head>
+
 <body>
 
   <div class="container">
 
-    <div class="top-bar">
-      <button id="themeToggle" class="theme-btn">
-        <i class="fa-solid fa-moon"></i>
-      </button>
+    <div class="header">
+      <h1>To-Do List</h1>
+
+      <button id="themeToggle">🌙</button>
     </div>
 
-    <h1>To-Do List</h1>
-
     <div class="input-section">
+
       <input
         type="text"
         id="taskInput"
@@ -43,19 +39,27 @@
       </select>
 
       <button id="addBtn">Add</button>
+
     </div>
 
     <input
       type="text"
       id="searchInput"
       placeholder="Search tasks..."
-      class="search-box"
     />
 
-    <div class="filter-buttons">
-      <button class="filter-btn active" data-filter="all">All</button>
-      <button class="filter-btn" data-filter="completed">Completed</button>
-      <button class="filter-btn" data-filter="pending">Pending</button>
+    <div class="filters">
+
+      <button id="allBtn">All</button>
+
+      <button id="completedBtn">
+        Completed
+      </button>
+
+      <button id="pendingBtn">
+        Pending
+      </button>
+
     </div>
 
     <ul id="taskList"></ul>
@@ -63,5 +67,7 @@
   </div>
 
   <script src="script.js"></script>
+
 </body>
+
 </html>

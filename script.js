@@ -1,66 +1,230 @@
+const priorityInput = document.getElementById("priorityInput");
+const searchInput = document.getElementById("searchInput");
+const themeToggle = document.getElementById("themeToggle");
 const taskInput = document.getElementById("taskInput");
 const dateInput = document.getElementById("dateInput");
 const timeInput = document.getElementById("timeInput");
-const priorityInput = document.getElementById("priorityInput");
 const addBtn = document.getElementById("addBtn");
 const taskList = document.getElementById("taskList");
-const searchInput = document.getElementById("searchInput");
-const filterButtons = document.querySelectorAll(".filter-btn");
-const themeToggle = document.getElementById("themeToggle");
+const allBtn = document.getElementById("allBtn");
+const completedBtn = document.getElementById("completedBtn");
+const pendingBtn = document.getElementById("pendingBtn");
 
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-let currentFilter = "all";
 
-renderTasks();
+/* ---------------- LOAD TASKS ON REFRESH ---------------- */
+
+window.addEventListener("DOMContentLoaded", loadTasks);
+
+/* ---------------- ADD TASK EVENTS ---------------- */
 
 addBtn.addEventListener("click", addTask);
 
-taskInput.addEventListener("keypress", function (e) {
-  if (e.key === "Enter") {
+taskInput.addEventListener("keypress", function(event) {
+
+  if (event.key === "Enter") {
     addTask();
   }
+
 });
 
-searchInput.addEventListener("input", renderTasks);
+/* FILTER EVENTS */
 
-filterButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    filterButtons.forEach((btn) => btn.classList.remove("active"));
-    button.classList.add("active");
+allBtn.addEventListener("click", showAllTasks);
 
-    currentFilter = button.dataset.filter;
-    renderTasks();
-  });
-});
+completedBtn.addEventListener("click", showCompletedTasks);
 
-themeToggle.addEventListener("click", () => {
+pendingBtn.addEventListener("click", showPendingTasks);
+/* SEARCH TASKS */
+
+searchInput.addEventListener("input", searchTasks);
+
+/* DARK MODE TOGGLE */
+
+themeToggle.addEventListener("click", function () {
+
   document.body.classList.toggle("dark-mode");
+
 });
+
+/* ---------------- ADD TASK FUNCTION ---------------- */
 
 function addTask() {
-  const text = taskInput.value.trim();
-  const date = dateInput.value;
-  const time = timeInput.value;
-  const priority = priorityInput.value;
 
-  if (text === "") {
+  const taskText = taskInput.value.trim();
+
+  if (taskText === "") {
     alert("Please enter a task");
     return;
   }
 
-  const task = {
-    id: Date.now(),
-    text,
-    date,
-    time,
-    priority,
-    completed: false,
-  };
+const task = {
+  text: taskText,
+  completed: false,
+  date: dateInput.value,
+  time: timeInput.value,
+  time: timeInput.value,
+  priority: priorityInput.value
+};
 
   tasks.push(task);
+
   saveTasks();
-  renderTasks();
+
+  renderTask(task);
 
   taskInput.value = "";
   dateInput.value = "";
+  timeInput.value = "";
+  priorityInput.value = "Low";
+}
+
+/* ---------------- RENDER TASK ---------------- */
+
+function renderTask(task) {
+
+  const li = document.createElement("li");
+
+  li.innerHTML = `
+    <<div>
+
+  <span class="task-text ${task.completed ? "completed" : ""}">
+    ${task.text}
+  </span>
+
+  <p class="priority ${task.priority.toLowerCase()}">
+  ${task.priority} Priority
+</p>
+
+  <p class="task-date">
+    📅 ${task.date || "No Date"} 
+    ⏰ ${task.time || ""}
+  </p>
+
+</div>
+
+    <div>
+  <button class="complete-btn">✔</button>
+  <button class="edit-btn">Edit</button>
+  <button class="delete-btn">Delete</button>
+    </div>
+  `;
+
+const deleteBtn = li.querySelector(".delete-btn");
+const completeBtn = li.querySelector(".complete-btn");
+const editBtn = li.querySelector(".edit-btn");
+const taskText = li.querySelector(".task-text");
+
+  /* DELETE TASK */
+
+  deleteBtn.addEventListener("click", function () {
+
+    li.remove();
+
+    tasks = tasks.filter(t => t.text !== task.text);
+
+    saveTasks();
+
+  });
+
+  /* COMPLETE TASK */
+
+  completeBtn.addEventListener("click", function () {
+
+    task.completed = !task.completed;
+
+    taskText.classList.toggle("completed");
+
+    saveTasks();
+
+  });
+
+
+editBtn.addEventListener("click", function () {
+
+  const updatedText = prompt("Edit your task", task.text);
+
+  if (updatedText === null || updatedText.trim() === "") {
+    return;
+  }
+
+  task.text = updatedText;
+
+  taskText.textContent = updatedText;
+
+  saveTasks();
+
+});
+
+  taskList.appendChild(li);
+}
+
+/* ---------------- SAVE TASKS ---------------- */
+
+function saveTasks() {
+
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+
+}
+
+/* ---------------- LOAD TASKS ---------------- */
+
+function loadTasks() {
+
+  tasks.forEach(task => {
+    renderTask(task);
+  });
+
+}
+/* SHOW ALL TASKS */
+
+function showAllTasks() {
+
+  taskList.innerHTML = "";
+
+  tasks.forEach(task => {
+    renderTask(task);
+  });
+
+}
+
+/* SHOW COMPLETED TASKS */
+
+function showCompletedTasks() {
+
+  taskList.innerHTML = "";
+
+  const completedTasks = tasks.filter(task => task.completed);
+
+  completedTasks.forEach(task => {
+    renderTask(task);
+  });
+
+}
+
+/* SHOW PENDING TASKS */
+
+function showPendingTasks() {
+
+  taskList.innerHTML = "";
+
+  const pendingTasks = tasks.filter(task => !task.completed);
+
+  pendingTasks.forEach(task => {
+    renderTask(task);
+  });
+}
+function searchTasks() {
+
+  const searchText = searchInput.value.toLowerCase();
+
+  taskList.innerHTML = "";
+
+  const filteredTasks = tasks.filter(task =>
+    task.text.toLowerCase().includes(searchText)
+  );
+
+  filteredTasks.forEach(task => {
+    renderTask(task);
+  });
 }
