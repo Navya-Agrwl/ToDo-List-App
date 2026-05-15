@@ -1,3 +1,5 @@
+const priorityInput = document.getElementById("priorityInput");
+const searchInput = document.getElementById("searchInput");
 const themeToggle = document.getElementById("themeToggle");
 const taskInput = document.getElementById("taskInput");
 const dateInput = document.getElementById("dateInput");
@@ -33,6 +35,9 @@ allBtn.addEventListener("click", showAllTasks);
 completedBtn.addEventListener("click", showCompletedTasks);
 
 pendingBtn.addEventListener("click", showPendingTasks);
+/* SEARCH TASKS */
+
+searchInput.addEventListener("input", searchTasks);
 
 /* DARK MODE TOGGLE */
 
@@ -57,7 +62,8 @@ const task = {
   text: taskText,
   completed: false,
   date: dateInput.value,
-  time: timeInput.value
+  time: timeInput.value,
+  priority: priorityInput.value
 };
 
   tasks.push(task);
@@ -69,6 +75,7 @@ const task = {
   taskInput.value = "";
   dateInput.value = "";
   timeInput.value = "";
+  priorityInput.value = "Low";
 }
 
 /* ---------------- RENDER TASK ---------------- */
@@ -83,6 +90,10 @@ function renderTask(task) {
   <span class="task-text ${task.completed ? "completed" : ""}">
     ${task.text}
   </span>
+
+  <p class="priority ${task.priority.toLowerCase()}">
+  ${task.priority} Priority
+</p>
 
   <p class="task-date">
     📅 ${task.date || "No Date"} 
@@ -199,6 +210,21 @@ function showPendingTasks() {
   const pendingTasks = tasks.filter(task => !task.completed);
 
   pendingTasks.forEach(task => {
+    renderTask(task);
+  });
+
+}
+function searchTasks() {
+
+  const searchText = searchInput.value.toLowerCase();
+
+  taskList.innerHTML = "";
+
+  const filteredTasks = tasks.filter(task =>
+    task.text.toLowerCase().includes(searchText)
+  );
+
+  filteredTasks.forEach(task => {
     renderTask(task);
   });
 
