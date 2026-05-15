@@ -28,12 +28,23 @@ h1 {
 .input-section {
   display: flex;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 input {
-  flex: 1;
   padding: 10px;
   font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+#taskInput {
+  flex: 1;
+  min-width: 200px;
+}
+
+#dateInput,
+#timeInput {
+  width: 160px;
 }
 
 button {
@@ -60,7 +71,9 @@ li {
   margin-bottom: 10px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   border-radius: 5px;
+  gap: 10px;
 }
 
 .delete-btn {
@@ -80,4 +93,58 @@ li {
 .edit-btn {
   background: orange;
   margin-right: 5px;
+}
+.task-date {
+  font-size: 12px;
+  color: gray;
+  margin-top: 5px;
+}
+.task-info {
+  flex: 1;
+}
+.filters {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.filters button {
+  flex: 1;
+}
+/* HEADER */
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* DARK MODE */
+
+.dark-mode {
+  background: #121212;
+}
+
+.dark-mode .container {
+  background: #1e1e1e;
+  color: white;
+}
+
+.dark-mode li {
+  background: #2a2a2a;
+}
+
+.dark-mode input {
+  background: #2a2a2a;
+  color: white;
+  border: 1px solid #444;
+}
+
+.dark-mode .task-date {
+  color: #aaa;
+}
+
+.dark-mode button {
+  opacity: 0.95;
 }

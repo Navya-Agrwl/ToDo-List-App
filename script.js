@@ -1,12 +1,14 @@
-
+const themeToggle = document.getElementById("themeToggle");
 const taskInput = document.getElementById("taskInput");
+const dateInput = document.getElementById("dateInput");
+const timeInput = document.getElementById("timeInput");
 const addBtn = document.getElementById("addBtn");
 const taskList = document.getElementById("taskList");
+const allBtn = document.getElementById("allBtn");
+const completedBtn = document.getElementById("completedBtn");
+const pendingBtn = document.getElementById("pendingBtn");
 
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-
-/* EDIT TASK */
-
 
 /* ---------------- LOAD TASKS ON REFRESH ---------------- */
 
@@ -24,6 +26,22 @@ taskInput.addEventListener("keypress", function(event) {
 
 });
 
+/* FILTER EVENTS */
+
+allBtn.addEventListener("click", showAllTasks);
+
+completedBtn.addEventListener("click", showCompletedTasks);
+
+pendingBtn.addEventListener("click", showPendingTasks);
+
+/* DARK MODE TOGGLE */
+
+themeToggle.addEventListener("click", function () {
+
+  document.body.classList.toggle("dark-mode");
+
+});
+
 /* ---------------- ADD TASK FUNCTION ---------------- */
 
 function addTask() {
@@ -35,10 +53,12 @@ function addTask() {
     return;
   }
 
-  const task = {
-    text: taskText,
-    completed: false
-  };
+const task = {
+  text: taskText,
+  completed: false,
+  date: dateInput.value,
+  time: timeInput.value
+};
 
   tasks.push(task);
 
@@ -47,6 +67,8 @@ function addTask() {
   renderTask(task);
 
   taskInput.value = "";
+  dateInput.value = "";
+  timeInput.value = "";
 }
 
 /* ---------------- RENDER TASK ---------------- */
@@ -56,9 +78,18 @@ function renderTask(task) {
   const li = document.createElement("li");
 
   li.innerHTML = `
-    <span class="task-text ${task.completed ? "completed" : ""}">
-      ${task.text}
-    </span>
+    <<div>
+
+  <span class="task-text ${task.completed ? "completed" : ""}">
+    ${task.text}
+  </span>
+
+  <p class="task-date">
+    📅 ${task.date || "No Date"} 
+    ⏰ ${task.time || ""}
+  </p>
+
+</div>
 
     <div>
   <button class="complete-btn">✔</button>
@@ -129,6 +160,45 @@ function saveTasks() {
 function loadTasks() {
 
   tasks.forEach(task => {
+    renderTask(task);
+  });
+
+}
+/* SHOW ALL TASKS */
+
+function showAllTasks() {
+
+  taskList.innerHTML = "";
+
+  tasks.forEach(task => {
+    renderTask(task);
+  });
+
+}
+
+/* SHOW COMPLETED TASKS */
+
+function showCompletedTasks() {
+
+  taskList.innerHTML = "";
+
+  const completedTasks = tasks.filter(task => task.completed);
+
+  completedTasks.forEach(task => {
+    renderTask(task);
+  });
+
+}
+
+/* SHOW PENDING TASKS */
+
+function showPendingTasks() {
+
+  taskList.innerHTML = "";
+
+  const pendingTasks = tasks.filter(task => !task.completed);
+
+  pendingTasks.forEach(task => {
     renderTask(task);
   });
 
